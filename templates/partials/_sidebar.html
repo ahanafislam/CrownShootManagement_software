@@ -1,0 +1,38 @@
+{% load static %}
+<nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
+    <div class="position-sticky">
+        <div class="list-group list-group-flush mx-3 mt-4">
+        <!-- <a href="#" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+            <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Dashboard</span>
+        </a> -->
+        <!-- Invoice dropdown Start -->
+        <a class="list-group-item list-group-item-action py-2 ripple" href="#" id="navbarDropdownMenuLink"
+        data-mdb-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-file-invoice fa-fw me-3"></i><span>Invoice</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+            <li><a class="dropdown-item" href="{% url 'new_invoice' %}">
+            <i class="fas fa-plus fa-fw me-3"></i><span>Create Invoice</span>
+            </a></li>
+            <li><a class="dropdown-item" href="{% url 'invoice_list' %}">
+            <i class="fas fa-clipboard-list me-3"></i><span>Invoice List</span>
+            </a></li>
+        </ul>
+        <!-- Invoice dropdown End -->
+        <!-- Client dropdown Start -->
+        <a class="list-group-item list-group-item-action py-2 ripple" href="#" id="navbarDropdownMenuLink"
+        data-mdb-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-user me-3"></i><span>Client</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+            <li><a class="dropdown-item" href="{% url 'create_client' %}">
+            <i class="fas fa-plus fa-fw me-3"></i><span>Add New Client</span>
+            </a></li>
+            <li><a class="dropdown-item" href="{% url 'client_list' %}">
+            <i class="fas fa-users me-3"></i><span>Client List</span>
+            </a></li>
+        </ul>
+        <!-- Client dropdown End -->
+        </div>
+    </div>
+</nav>

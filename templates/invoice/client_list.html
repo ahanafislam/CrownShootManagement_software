@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block contant %}
+<!-- Start Code For Search Clients Table -->
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <!-- Start Clients Search Bar -->
+        <form action="#" method="GET">
+            {% csrf_token %}
+            <div class="input-group">
+                <input class="form-control" type="search" placeholder="Search" name="search" aria-label="Search">
+                <select class="btn btn-outline-danger border border-danger shadow-0" name="district">
+                    <option selected="true" disabled="disabled" value="">District (All)</option>
+                    {% for key,value in district_list.items %}
+                        <option value="{{ value }}">{{ value }}</option>
+                    {% endfor %}
+                </select>
+                <select class="btn btn-outline-danger border border-danger shadow-0" name="division">
+                    <option selected="true" disabled="disabled" value="">Division (All)</option>
+                    {% for key,value in divisions_list.items %}
+                        <option value="{{ value }}">{{ value }}</option>
+                    {% endfor %}
+                </select>
+                <select class="btn btn-outline-danger border border-danger shadow-0" name="sort">
+                    <option selected="true" disabled="disabled">Sort By</option>
+                    <option value="Old">Old To New</option>
+                    <option value="New">New To Old</option>
+                </select>
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-search"></i>
+                </button>            
+            </div>
+        </form>
+        <!-- End Clients Search Bar -->
+    </div>
+</div>
+<!-- End Code For Search Clients Table -->
+
+<!-- Start Code For List Of Clients Table -->
+<div class="card shadow" style="margin: auto;">
+    <div class="nav bg-danger text-light p-1 h6">
+        Client List
+    </div>
+    <div class="card-body">
+        {% if clients %}
+            <div class="table-responsive">
+                <table class="table table-hover table-sm text-center">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 5%;">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Phone</th>
+                            <th scope="col">Number Of Invoice</th>
+                            <th scope="col">Joining Date</th>
+                            <th scope="col" style="width: 15%;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for client in clients %}
+                            <tr>
+                                <th scope="row" style="width: 5%;">{{ forloop.counter0|add:clients.start_index }} </th>
+                                <td>{{ client.name }}</td>
+                                <td>{{ client.phone }}</td>
+                                <td>{{ client.number_of_invoice }}</td>
+                                <td>{{ client.join_date|date:'d/m/Y' }}</td>
+                                <td style="width: 15%;">
+                                    <a href="{% url 'client_details' client.id %}" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="Click For View Or Update This Client">
+                                        <i class="far fa-eye"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-delete-url="{% url 'delete_client' client.id%}" title="Click For Delete This Client">
+                                        <i class="fas fa-trash-alt"></i>
+                                </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- Start Code For Pagination -->
+            <nav class="card">
+                <ul class="pagination pagination-sm justify-content-center">
+                    {% if clients.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ clients.previous_page_number }}"><i class="fas fa-backward"></i></a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ clients.previous_page_number }}">{{ clients.previous_page_number }}</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href=""><i class="fas fa-backward"></i></a>
+                    </li>
+                    {% endif %}
+                    <li class="page-item active">
+                        <a class="page-link bg-danger" href="?page={{ clients.number }}">{{ clients.number }}</a>
+                    </li>
+                    {% if clients.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ clients.next_page_number }}">{{ clients.next_page_number}}</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ clients.next_page_number }}"><i class="fas fa-forward"></i></a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href=""><i class="fas fa-forward"></i></a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <!-- End Code For Pagination -->
+        {% else %}
+            <div class="card shadow-0">
+                <div class="card-body text-danger text-center">
+                    <div class="display-6">
+                        <i class="fas fa-exclamation-triangle"></i> Search Results Not Found
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+<!-- End Code For List Of Client Table -->
+
+
+<!-- Start Confirm Deletion Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-body text-center">
+          <i class="fas fa-trash-alt text-danger display-3"></i></br>
+          <p>Are You Sure You Want To Delete This Client?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success btn-sm" data-bs-dismiss="modal">No</button>
+          <a href="#" class="btn btn-danger btn-sm">Delete</a>
+        </div>
+      </div>
+    </div>
+</div>
+<script>
+	$(document).ready(function() {
+		$('#staticBackdrop').on('show.bs.modal', function(e) {
+			var url = $(e.relatedTarget).data('delete-url');
+			$('#staticBackdrop .modal-footer a').attr('href', url);
+		});
+	});
+</script>
+<!-- End Confirm Deletion Modal -->
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block contant %}
+<div class="card mt-3 shadow" style="max-width: 75%; margin: auto;">
+    <div class="card-header bg-danger text-light text-center h4">
+        <i class="fas fa-user me-2"></i>Create New Client
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{% url 'create_client' %}">
+        {% csrf_token %}
+        <div class="row mb-4">
+            <div class="col-md">
+            <div class="form-outline">
+                <input type="text" id="fullName" name="fullName" class="form-control" required/>
+                <label class="form-label" for="fullName">Full name</label>
+            </div>
+            </div>
+            <div class="col-md">
+            <div class="form-outline">
+                <input type="text" id="phoneNumber" name="phoneNumber" class="form-control" required/>
+                <label class="form-label" for="phoneNumber">Phone number</label>
+            </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md">
+            <div class="form-outline">
+                <input type="email" id="email" name="email" class="form-control" />
+                <label class="form-label" for="email">Email</label>
+            </div>
+            </div>
+            <div class="col-md">
+            <div class="form-outline">
+                <input type="text" id="address" name="address" class="form-control" required/>
+                <label class="form-label" for="address">Address</label>
+            </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md">
+                <select name="district" id="district" class="form-select" required>
+                    <option selected="true" disabled="disabled" value="">Select District</option>
+                    {% for key,value in district_list.items %}
+                        <option value="{{ value }}">{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md">
+                <select name="division" id="division" class="form-select" required>
+                    <option selected="true" disabled="disabled" value="">Select Division</option>
+                    {% for key,value in divisions_list.items %}
+                        <option value="{{ value }}">{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <!-- Submit button -->
+        <div class="text-center">
+            <input type="submit" name="savecreate" value="Save and Create Invoice" class="btn btn-outline-danger" style="margin-right: 4%;"/>
+            <input type="submit" name="save" value="Save Client" class="btn btn-danger" />
+        </div>
+        </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

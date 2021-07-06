@@ -1,0 +1,16 @@
+{% extends 'admin/base.html' %}
+{% load static %}
+
+{% block branding %}
+    <h4 id="head">
+        <img src="{% static 'img/cslogo.png' %}" height="50" alt="Mentor Finder" class="brand_image">
+        {% if request.user.is_admin %}
+            ( Admin Area )
+        {% else %}
+            ( Staff Ares )
+        {% endif %}
+    </h4>
+{% endblock %}
+{% block extrastyle %}
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+{% endblock %}

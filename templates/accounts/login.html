@@ -1,0 +1,28 @@
+{% extends 'accounts/account_base.html' %}
+{% load static %}
+{% block account_contant %}
+<div class="card position-absolute top-50 start-50 translate-middle shadow-lg border-0" style="min-width: 20rem;">
+  <div class="bg-danger p-3" style="width: 20rem;">
+    <img src="{% static 'img/cslogo.png' %}" class="card-img-top" alt="...">
+  </div>
+    <div class="card-body">
+        {% include 'partials/_alerts.html' %}
+        <form action="{% url 'loginPage' %}" method="POST">
+        {% csrf_token %}
+            <div class="mb-3">
+              <input type="email" name="email" class="form-control" placeholder="Email">
+            </div>
+            <div class="mb-3">
+              <input type="password" name="password" class="form-control" placeholder="Password">
+            </div>
+            {% if request.GET.next %}
+              <input type="hidden" name="next" value="{{request.GET.next}}">
+            {% endif %}
+            <input type="submit" class="btn btn-danger" value="Log In">
+        </form>
+        <div class="float-end">
+            <a href="{% url 'reset_password' %}" class="nav-link link-danger"><small>Forget Password ?</small></a>
+        </div>
+    </div>
+</div>
+{% endblock %}

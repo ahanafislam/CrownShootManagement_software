@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block contant %}
+<!-- Start Client's Details Code -->
+<div class="card mt-3 shadow" style="max-width: 75%; margin: auto;">
+    <div class="card-header bg-danger text-light text-center h4">
+        <i class="fas fa-user me-2"></i>Client's Details
+    </div>
+    <div class="card-body">
+        <form action="{% url 'update_client' client.id %}" method="POST">
+        {% csrf_token %}
+            <div class="row mb-4">
+                <div class="col-md">
+                <div class="form-outline">
+                    <input type="text" id="fullName" name="fullName" class="form-control" value="{{ client.name }}"/>
+                    <label class="form-label" for="fullName">Full name</label>
+                </div>
+                </div>
+                <div class="col-md">
+                <div class="form-outline">
+                    <input type="text" id="phoneNumber" name="phoneNumber" class="form-control" value="{{ client.phone }}"/>
+                    <label class="form-label" for="phoneNumber">Phone number</label>
+                </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md">
+                <div class="form-outline">
+                    <input type="email" id="email" name="email" class="form-control" value="{{ client.email }}"/>
+                    <label class="form-label" for="email">Email</label>
+                </div>
+                </div>
+                <div class="col-md">
+                <div class="form-outline">
+                    <input type="text" id="address" name="address" class="form-control" value="{{ client.address }}"/>
+                    <label class="form-label" for="address">Address</label>
+                </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md">
+                    <select name="district" id="district" class="form-select">
+                        <option selected="true" >{{ client.district }}</option>
+                        {% for key,value in district_list.items %}
+                            <option value="{{ value }}">{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md">
+                    <select name="division" id="division" class="form-select">
+                        <option selected="true">{{ client.division }}</option>
+                        {% for key,value in divisions_list.items %}
+                            <option value="{{ value }}">{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <!-- Submit button -->
+            <div class="text-center">
+                <input type="submit" name="savecreate" value="Create Invoice" class="btn btn-outline-danger" style="margin-right: 4%;"/>
+                <input type="submit" value="Update Client" class="btn btn-danger" />
+            </div>
+            <p class="card-text"><small class="text-muted">From {{ client.join_date|naturaltime }}</small></p>
+        </form>    
+    </div>
+    </div>
+</div>
+<!-- End Client's Details Code -->
+
+<!-- Start Code For List Of Invoice Table -->
+<div class="card mt-5">
+    <div class="nav bg-danger text-light p-1 h6">
+        Invoice List Of {{ client.name }}
+    </div>
+    <div class="card-body">
+        {% if invoices %}
+            <div class="table-responsive">
+                <table class="table table-hover table-sm text-center">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 5%;">#</th>
+                            <th scope="col">Event Name</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Due</th>
+                            <th scope="col" style="width: 15%;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for invoice in invoices %}
+                            <tr>
+                                <th scope="row" style="width: 5%;">{{ forloop.counter }} </th>
+                                <td>{{ invoice.event_name }}</td>
+                                <td>{{ invoice.invoice_date|date:'d/m/Y' }}</td>
+                                <td>{{ invoice.payment_status }}</td>
+                                <td><span class="h4">&#2547;</span>{{ invoice.get_item_total }}</td>
+                                <td><span class="h4">&#2547;</span>{{ invoice.get_due_amount }}</td>
+                                <td style="width: 15%;">
+                                    <a href="{% url 'invoice' invoice.id %}" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="Click For View Or Update This Invoice">
+                                        <i class="far fa-eye"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-delete-url="{% url 'delete_invoice' invoice.id %}" title="Click For Delete This Invoice">
+                                        <i class="fas fa-trash-alt"></i>
+                                </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="card shadow-0">
+                <div class="card-body text-danger text-center">
+                    <i class="fas fa-exclamation-triangle"></i> {{ client.name }} has not any invoice
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+<!-- End Code For List Of Invoice Table -->
+
+
+<!-- Start Confirm Deletion Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-body text-center">
+          <i class="fas fa-trash-alt text-danger display-3"></i></br>
+          <p>Are You Sure You Want To Delete This Invoice?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success btn-sm" data-bs-dismiss="modal">No</button>
+          <a href="#" class="btn btn-danger btn-sm">Delate</a>
+        </div>
+      </div>
+    </div>
+</div>
+<script>
+	$(document).ready(function() {
+		$('#staticBackdrop').on('show.bs.modal', function(e) {
+			var url = $(e.relatedTarget).data('delete-url');
+			$('#staticBackdrop .modal-footer a').attr('href', url);
+		});
+	});
+</script>
+<!-- End Confirm Deletion Modal -->
+{% endblock %}

@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+{% block contant %}
+<div class="text-danger text-center h3 mb-3">
+    <i class="fas fa-file-invoice fa-fw me-2"></i> Invoice #{{ invoice.invoice_no }}
+</div>
+
+<!-- Start Form For client Invoice Informations -->
+<div class="card shadow" style="margin: auto;">
+    <div class="nav bg-danger text-light p-1 h6">
+        Client Info
+    </div>
+    <div class="card-body">
+        <form action="{% url 'update_invoice' invoice.id %}" method="POST">
+        {% csrf_token %}
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <tbody>
+                    <tr>
+                        <td class="col">
+                            <span class="h6 me-2">Bill To :</span><a href="{% url 'client_details' invoice.client_name.id %}" class="link-danger">
+                                {{ invoice.client_name }}
+                            </a>
+                        </td>
+                        <td class="col">
+                            <span class="h6 me-2">Phone :</span>{{ invoice.client_name.phone }}
+                        </td>
+                        <td class="col">
+                            <span class="h6 me-2">Email :</span>{{ invoice.client_name.email }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col">
+                            <span class="h6 me-2">Address :</span>{{ invoice.client_name.address }}, {{ invoice.client_name.district }}, {{ invoice.client_name.division }}
+                        </td>
+                        <td class="col">
+                            <select name="payment_status" id="payment_status" class="form-select" required>
+                                <option value="Unpaid" {% if invoice.unpaid %}selected{% endif %}>
+                                    Unpaid
+                                </option>
+                                <option value="Due" {% if invoice.due %}selected{% endif %}>
+                                    Due
+                                </option>
+                                <option value="Paid" {% if invoice.paid %}selected{% endif %}>
+                                    Paid
+                                </option>
+                            </select>
+                            <label class="form-label" for="payment_status">Payment Status</label>
+                        </td>
+                        <td class="col">
+                            <span class="h6 me-2">Date :</span><strong>{{ invoice.invoice_date|date:'d/m/Y' }}</strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col">
+                            <div class="form-outline">
+                                <input type="text" id="groom" name="groom" class="form-control" value="{{ invoice.groom_name }}"/>
+                                <label class="form-label h6" for="groom">Groom Name</label>
+                            </div>
+                        </td>
+                        <td class="col">
+                            <div class="form-outline">
+                                <input type="text" id="bride" name="bride" class="form-control" value="{{ invoice.bride_name }}"/>
+                                <label class="form-label h6" for="bride">Bride Name</label>
+                            </div>
+                        </td>
+                        <td class="col">
+                            <input type="text" id="due_date" name="due_date" class="form-control" value="{{ invoice.due_date }}" required>
+                            <label class="form-label" for="due_date">Due Date</label>
+                            <script type="text/javascript">
+                                $(function () {
+                                  $('#due_date').datepicker({
+                                    todayBtn: "linked",
+                                    orientation: "bottom left",
+                                    autoclose: true,
+                                    format: 'dd/mm/yyyy',
+                                  });
+                                });
+                            </script>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Submit button -->
+            <input type="submit" name="save" value="Save" class="btn btn-danger" />
+            <a href="{% url 'print_invoice' invoice.id %}" class="btn btn-outline-danger"><i class="fas fa-print me-2"></i>Invoice Print Priview</a>
+          </form>
+    </div>
+</div>
+<!-- End Form For client Invoice Informations -->
+
+<!-- Start Form For client Invoice Informations -->
+<div class="card shadow mt-4" style="margin: auto;">
+    <div class="nav bg-danger text-light p-1 h6">
+        Invoice Item
+    </div>
+    <div class="card-body">
+        <form action="{% url 'add_item' invoice.id %}" method="post">
+        {% csrf_token %}
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Event Period</th>
+                        <th>Venue</th>
+                        <th>Program Type</th>
+                        <th>Packages</th>
+                        <th>Price</th>
+                        <th class="text-right" {% if invoice.paid %} hidden {% endif %}>Actions</th>
+                    </tr>
+                    {% for item in invoice.invoiceitem_set.all %}
+                    <tr>
+                        <td>{{ item.event_date_time|date:'d/m/y @ g:iA'}}</td>
+                        <td>{{ item.event_period }}</td>
+                        <td>{{ item.venue }}</td>
+                        <td>{{ item.program_name }}</td>
+                        <td>{{ item.packages }}</td>
+                        <td><span class="h4">&#2547;</span>{{ item.price }}</td>
+                        <td class="text-right" {% if invoice.paid %} hidden {% endif %}>
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-delete-url="{% url 'delete_item' invoice.id item.id %}">
+                                 <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    <tr {% if invoice.paid %} hidden {% endif %}>
+                        <td><input type="datetime-local" name="date_time" class="form-control form-control-sm" style="width: 9rem;" required></td>
+                        <td>
+                            <select class="form-select form-select-sm" name="event_period" required>
+                                <option selected="true" disabled="disabled" value="">Select Period</option>
+                                <option value="Noon">Noon</option>
+                                <option value="Evening">Evening</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-select form-select-sm" name="venue" required>
+                                <option selected="true" disabled="disabled" value="">Select venue</option>
+                                {% for venue in venues %}
+                                    <option value="{{ venue.venue_name }}">{{ venue.venue_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-select form-select-sm" name="program_type" required>
+                                <option selected="true" disabled="disabled" value="">Select Program</option>
+                                {% for key,value in program_type.items %}
+                                    <option value="{{ value }}">{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-select form-select-sm" name="packages" required>
+                                <option selected="true" disabled="disabled" value="">Select Packages</option>
+                                {% for package in packages %}
+                                    <option value="{{ package.package_code }}" id="{{ package.id }}">{{ package.package_code }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>&nbsp;</td>
+                        <td class="text-right">
+                            <button type="submit" class="btn btn-success btn-sm">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="card float-sm-end mt-1 mb-3 shadow" style="width: 16rem;">
+    <form action="{% url 'update_invoice_price' invoice.id %}" method="POST">
+    {% csrf_token %}
+        <ul class="list-group">
+            <li class="list-group-item h5">Total : <strong class="h2">&#2547;</strong>{{ invoice.get_item_total }}</li>
+            <li class="list-group-item">
+                <div class="form-outline">
+                    <input type="text" id="advance" name="advance" class="form-control form-control-sm" value="{{ invoice.advance }}" {% if invoice.paid %} readonly {% endif %} required/>
+                    <label class="form-label" for="advance">Advance</label>
+                </div>
+            </li>
+            <li class="list-group-item">Due : <strong class="h3">&#2547;</strong>{{ invoice.get_due_amount}}</li>
+            <li class="list-group-item">
+                <input type="submit" class="btn btn-danger btn-sm float-end" value="save">
+            </li>
+            <li class="list-group-item p-0 text-center">
+                <!-- This is for Hidden Discount Input -->
+                <div class="accordion accordion-flush" id="hidden_discount">
+                    <div class="accordion-item">
+                        <p id="flush-headingThree">
+                            <button class="btn shadow-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                            _
+                            </button>
+                        </p>
+                      <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#hidden_discount">
+                        <div class="form-outline">
+                            <input type="text" id="discount" name="discount" class="form-control form-control-sm" value="{{ invoice.discount }}" {% if invoice.paid %} readonly {% endif %} />
+                            <label class="form-label" for="discount">Honors</label>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <!-- End for Hidden Discount Input -->
+            </li>
+        </ul>
+    </form>
+</div>
+<!-- End Form For client Invoice Informations -->
+
+<!-- Start Confirm Deletion Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-body text-center">
+          <i class="fas fa-trash-alt text-danger display-3"></i></br>
+          <p>Are You Sure You Want To Delete This Item?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success btn-sm" data-bs-dismiss="modal">No</button>
+          <a href="#" class="btn btn-danger btn-sm">Delate</a>
+        </div>
+      </div>
+    </div>
+</div>
+<script>
+	$(document).ready(function() {
+		$('#staticBackdrop').on('show.bs.modal', function(e) {
+			var url = $(e.relatedTarget).data('delete-url');
+			$('#staticBackdrop .modal-footer a').attr('href', url);
+		});
+	});
+</script>
+<!-- End Confirm Deletion Modal -->
+{% endblock %}

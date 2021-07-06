@@ -1,0 +1,56 @@
+#header{
+    background: #f93154;
+    color: #ffffff;
+}
+
+#branding h4{
+    color: #ffffff;
+    margin: auto;
+    padding: auto;
+}
+
+.module caption{
+    background: #f93154;
+}
+
+body{
+    background: #ffffff;
+}
+
+tbody th a:link{
+    color: #f93154;
+}
+
+div.breadcrumbs {
+    background-color: #fd5d5d;
+    color: #fff;
+}
+
+
+.module h2,
+.module caption,
+.inline-group h2 {
+    background: #f93154;
+}
+
+.button,
+input[type=submit],
+input[type=button],
+.submit-row input,
+a.button {
+  background-color: #f93154;
+  color: #f5f5f5;
+}
+
+
+.colMS{
+    margin: auto;
+    padding: auto;
+}
+
+:root {
+    --primary: #f93154;
+    --secondary: #f93154;
+    --link-fg: #f93154;
+    --link-selected-fg: #f93154;
+  }

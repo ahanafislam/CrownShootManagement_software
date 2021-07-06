@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>CrownShoot : Print Invoice</title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="Invoicebus Invoice Template">
+    <meta name="author" content="Invoicebus">
+
+    <meta name="template-hash" content="baadb45704803c2d1a1ac3e569b757d5">
+
+    <link rel="stylesheet" href="{% static 'css/print_invoice.css' %}">
+  </head>
+  <body>
+    <div id="container">
+      <section id="memo">
+        <div class="logo">
+          <img src="{% static 'img/invoice/cslogo.png' %}"/>
+        </div>
+
+        <div class="company-info">
+          <small>www.crownshoot.photography</small>
+          <br />
+
+          <span>New Engineer Para</span>
+          <span>Rangpur-5400</span>
+
+          <br />
+
+          <span>+8801715120304</span>
+          <span>,we@crownshoot.photography</span>
+        </div>
+      </section>
+
+      <section id="invoice-title-number">
+        <span id="title">INVOICE</span>
+        <span id="number">#{{ invoice.invoice_no }}</span>
+      </section>
+
+      <section id="client-info">
+        <span>To :</span>
+        <div>
+          <span class="bold">{{ invoice.client_name }}</span>
+        </div>
+
+        <div>
+          <span>{{ invoice.client_name.address }}</span>
+        </div>
+
+        <div>
+          <span>{{ invoice.client_name.district }}, {{ invoice.client_name.division }}</span>
+        </div>
+
+        <div>
+          <span>{{ invoice.client_name.phone }}</span>
+        </div>
+
+        <div>
+          <span>{{ invoice.client_name.email }}</span>
+        </div>
+      </section>
+      <section id="groom_bride">
+        <span>Groom Name :</span>
+        <div>
+          <span class="bold">{{ invoice.groom_name }}</span>
+        </div>
+        <span>Bride Name :</span>
+        <div>
+          <span class="bold">{{ invoice.bride_name }}</span>
+        </div>
+      </section>
+      <section id="invoice-info">
+        <div>
+          <span>Issue Date: </span> <span>{{ invoice.invoice_date|date:'d/m/Y' }}</span>
+        </div>
+        <div>
+          <span>Due Date: </span> <span>{{ invoice.due_date }}</span>
+        </div>
+        <button class="print-button" onclick="window.print();"><span class="print-icon">Print</span></button>
+      </section>
+      <div class="clearfix"></div>
+
+      <section id="items">
+
+        <table>
+
+          <tr>
+            <th>#</th>
+            <th>Date & Time</th>
+            <th>Event Period</th>
+            <th>Venue</th>
+            <th>Program Type</th>
+            <th>Packages</th>
+            <th>Price</th>
+          </tr>
+
+          {% for item in invoice.invoiceitem_set.all %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ item.event_date_time|date:'d/m/y @ g:iA'}}</td>
+            <td>{{ item.event_period }}</td>
+            <td>{{ item.venue }}</td>
+            <td>{{ item.program_name }}</td>
+            <td>{{ item.packages }}</td>
+            <td><span style="font-size: 21px;">&#2547;</span>{{ item.price }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+
+      </section>
+
+      <section id="sums">
+
+        <table cellpadding="0" cellspacing="0">
+          <tr class="amount-total">
+            <th>TOTAL :</th>
+            <td><span style="font-size: 21px;">&#2547;</span>{{ invoice.get_item_total }}</td>
+          </tr>
+
+          <tr>
+            <th>Advance :</th>
+            <td><span style="font-size: 19px;">&#2547;</span>{{ invoice.advance }}</td>
+          </tr>
+
+          <tr>
+            <th>AMOUNT DUE : </th>
+            <td><span style="font-size: 21px;">&#2547;</span>{{ invoice.get_due_amount}}</td>
+          </tr>
+
+        </table>
+
+        <div class="clearfix"></div>
+      </section>
+      <small id="terms">
+        <ul class="notes">
+          <li>All photos will be delivered in DVD Disk.</li>
+          <li>50% payment is required in advance for booking and 50% to be paid when Event Completed.</li>
+        </ul>
+      </small>
+    </div>
+  </body>
+</html>
