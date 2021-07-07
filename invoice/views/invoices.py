@@ -72,7 +72,7 @@ def update_invoice(request,invoice_id):
     }
 
     try:
-        event_name = str(f"{request.POST['groom']}&{request.POST['bride']}")
+        event_name = str(f"{request.POST['groom']} & {request.POST['bride']}")
         invoice.payment_status = request.POST['payment_status']
         invoice.groom_name = request.POST['groom']
         invoice.bride_name = request.POST['bride']

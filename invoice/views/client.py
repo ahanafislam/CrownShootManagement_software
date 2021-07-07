@@ -35,6 +35,8 @@ def create_client(request):
                 address=request.POST['address'],
                 district=request.POST['district'],
                 division=request.POST['division'],
+                facebook_link=request.POST['facebook'],
+                descriptions=request.POST['description'],
             )
             client.save()
             messages.success(request,f'{client.name} has been added to the client list!')
@@ -129,6 +131,8 @@ def update_client(request,client_id):
     client.address = request.POST['address']
     client.district = request.POST['district']
     client.division = request.POST['division']
+    client.facebook_link = request.POST['facebook']
+    client.descriptions = request.POST['description']
     client.save()
     messages.warning(request,"Client's Information Has been updated !")
 

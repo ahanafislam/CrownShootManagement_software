@@ -9,6 +9,8 @@ class Client(models.Model):
     address = models.CharField(max_length=255)
     district = models.CharField(max_length=255)
     division = models.CharField(max_length=255)
+    facebook_link = models.URLField(blank=True,null=True)
+    descriptions = models.TextField(blank=True,null=True)
     join_date = models.DateTimeField(default=datetime.now, blank=True)
 
     def __str__(self):
